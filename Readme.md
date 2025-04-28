@@ -27,7 +27,7 @@
 │       └── snake.ico      # 贪吃蛇图标
 ├── .idea/                   # IDE 配置文件 (例如 PyCharm, VSCode)
 ├── game_launcher.py       # 主入口 - 基于 Tkinter 的游戏选择器 UI
-├── explanation.md         # 本文件 - 项目文档
+├── Readme.md         # 本文件 - 项目文档
 └── requirements.txt       # (可选 - 如有需要，列出依赖项)
 ```
 
