@@ -27,7 +27,7 @@ This project is a collection of classic mini-games in Python, accessible via a g
 │       └── snake.ico      # Snake icon
 ├── .idea/                   # IDE config files (e.g., PyCharm, VSCode)
 ├── game_launcher.py       # Main entry - Tkinter-based game selector UI
-├── explanation.md         # This file - project documentation
+├── Readme.md         # This file - project documentation
 └── requirements.txt       # (Optional) List of dependencies
 ```
 
