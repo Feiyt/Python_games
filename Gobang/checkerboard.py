@@ -21,6 +21,7 @@ class Checkerboard:
 
     # 判断是否可落子
     def can_drop(self, point):
+        """Checks if a stone can be placed at the given point."""
         return self._checkerboard[point.Y][point.X] == 0
 
     def drop(self, chessman, point):
@@ -39,13 +40,16 @@ class Checkerboard:
 
     # 判断是否赢了
     def _win(self, point):
+        """Checks if the last move at 'point' resulted in a win."""
         cur_value = self._checkerboard[point.Y][point.X]
         for os in offset:
             if self._get_count_on_direction(point, cur_value, os[0], os[1]):
                 return True
 
     def _get_count_on_direction(self, point, value, x_offset, y_offset):
+        """Counts consecutive stones in a given direction from a point."""
         count = 1
+        # Check positive direction
         for step in range(1, 5):
             x = point.X + step * x_offset
             y = point.Y + step * y_offset
@@ -53,6 +57,7 @@ class Checkerboard:
                 count += 1
             else:
                 break
+        # Check negative direction
         for step in range(1, 5):
             x = point.X - step * x_offset
             y = point.Y - step * y_offset

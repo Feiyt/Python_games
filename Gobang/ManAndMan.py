@@ -53,31 +53,10 @@ else:
 
 RIGHT_INFO_POS_X = SCREEN_HEIGHT + Stone_Radius2 * 2 + 10
 
-def print_text(screen, font, x, y, text, fcolor=TEXT_COLOR):
-    imgText = font.render(text, True, fcolor)
-    screen.blit(imgText, (x, y))
-
-# --- Standardized Button Function ---
-def draw_button(surface, text, font, x, y, width, height, color, hover_color, text_color):
-    text_surf_temp = font.render(text, True, text_color)
-    text_width, text_height = text_surf_temp.get_size()
-    padded_width = max(width, text_width + 40) 
-    button_rect = pygame.Rect(0, 0, padded_width, height)
-    button_rect.center = (x + width // 2, y + height // 2)
-    mouse_pos = pygame.mouse.get_pos()
-    current_color = color
-    if button_rect.collidepoint(mouse_pos):
-        current_color = hover_color
-    pygame.draw.rect(surface, current_color, button_rect, border_radius=5)
-    text_surface = font.render(text, True, text_color)
-    text_rect = text_surface.get_rect(center=button_rect.center)
-    surface.blit(text_surface, text_rect)
-    return button_rect
-# --- End Standardized Button Function ---
-
+# --- Add Missing Drawing Functions (Copied from ManAndMachine.py) ---
 def _draw_checkerboard(screen):
-    # Use unified colors
-    # screen.fill(BACKGROUND_COLOR) # Filled in main loop
+    # Use unified colors for board background and lines
+    # screen.fill(BACKGROUND_COLOR) # Filling handled in main loop now
     pygame.draw.rect(screen, GRID_LINE_COLOR, (Outer_Width, Outer_Width, Border_Length, Border_Length), Border_Width)
     for i in range(Line_Points):
         pygame.draw.line(screen, GRID_LINE_COLOR,
@@ -87,7 +66,7 @@ def _draw_checkerboard(screen):
         pygame.draw.line(screen, GRID_LINE_COLOR,
                          (Start_X + SIZE * j, Start_X),
                          (Start_X + SIZE * j, Start_X + SIZE * (Line_Points - 1)), 1)
-    star_point_color = TEXT_COLOR
+    star_point_color = TEXT_COLOR # Use standard text color for star points
     for i in (3, 9, 15):
         for j in (3, 9, 15):
             radius = 5 if i == j == 9 else 3
@@ -95,12 +74,15 @@ def _draw_checkerboard(screen):
             pygame.gfxdraw.filled_circle(screen, Start_X + SIZE * i, Start_Y + SIZE * j, radius, star_point_color)
 
 def _draw_chessman(screen, point, stone_color):
+    # This function is fine, uses the passed (unified) color
     pygame.gfxdraw.aacircle(screen, Start_X + SIZE * point.X, Start_Y + SIZE * point.Y, Stone_Radius, stone_color)
     pygame.gfxdraw.filled_circle(screen, Start_X + SIZE * point.X, Start_Y + SIZE * point.Y, Stone_Radius, stone_color)
 
 def _draw_chessman_pos(screen, pos, stone_color):
+    # This function is fine, uses the passed (unified) color
     pygame.gfxdraw.aacircle(screen, pos[0], pos[1], Stone_Radius2, stone_color)
     pygame.gfxdraw.filled_circle(screen, pos[0], pos[1], Stone_Radius2, stone_color)
+# --- End Add Missing Drawing Functions ---
 
 # Updated click detection (same as ManAndMachine)
 def _get_clickpoint(click_pos):
@@ -174,8 +156,22 @@ def show_end_screen(screen, winner):
     # If loop exits otherwise (e.g., bug), default to not restarting
     return False 
 
+# --- Standardized Button Function ---
+def draw_button(surface, text, font, x, y, width, height, color, hover_color, text_color):
+    """Draws a button on the screen."""
+    mouse_pos = pygame.mouse.get_pos()
+    if x < mouse_pos[0] < x + width and y < mouse_pos[1] < y + height:
+        pygame.draw.rect(surface, hover_color, (x, y, width, height))
+    else:
+        pygame.draw.rect(surface, color, (x, y, width, height))
+    text_surface = font.render(text, True, text_color)
+    text_rect = text_surface.get_rect(center=(x + width // 2, y + height // 2))
+    surface.blit(text_surface, text_rect)
+    return pygame.Rect(x, y, width, height)
+
 # Updated function for drawing info panel in Man vs Man mode
 def _draw_right_info_pvp(screen, font, cur_runner):
+    """Draws the information panel on the right for Player vs Player mode."""
     panel_x_start = SCREEN_HEIGHT # Start of the info panel area
     padding = 15
     y_pos = Start_Y # Start drawing from same top alignment as board grid
@@ -200,13 +196,14 @@ def _draw_right_info_pvp(screen, font, cur_runner):
         turn_indicator_rect = p1_text_rect
     else:
         turn_indicator_rect = p2_text_rect
-    turn_text_surf = font.render('<- 落子中', True, ACCENT_COLOR)
+    turn_text_surf = font.render('<-', True, ACCENT_COLOR)
     turn_text_rect = turn_text_surf.get_rect(midleft=(turn_indicator_rect.right + 10, turn_indicator_rect.centery))
     screen.blit(turn_text_surf, turn_text_rect)
     
     # No score tracking in PvP mode
 
 def main():
+    """Main game loop for the Player vs Player mode."""
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption('五子棋 (双人)')

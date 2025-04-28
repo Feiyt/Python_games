@@ -57,9 +57,10 @@ else:
 
 RIGHT_INFO_POS_X = SCREEN_HEIGHT + Stone_Radius2 * 2 + 10
 
-def print_text(screen, font, x, y, text, fcolor=TEXT_COLOR): # Default to TEXT_COLOR
-    imgText = font.render(text, True, fcolor)
-    screen.blit(imgText, (x, y))
+# Removed unused print_text function
+# def print_text(screen, font, x, y, text, fcolor=TEXT_COLOR): # Default to TEXT_COLOR
+#     imgText = font.render(text, True, fcolor)
+#     screen.blit(imgText, (x, y))
 
 # --- Standardized Button Function ---
 def draw_button(surface, text, font, x, y, width, height, color, hover_color, text_color):
@@ -129,6 +130,7 @@ def show_end_screen(screen, winner):
         pygame.time.Clock().tick(15)
 
 def main():
+    """Main game loop for the Man vs Machine mode."""
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption('五子棋 (人机)')
@@ -269,7 +271,7 @@ def _draw_right_info(screen, font, cur_runner, player1_wins, player2_wins):
     # Player 1 Info
     p1_indicator_pos = (panel_x_start + Stone_Radius2 + padding, y_pos + Stone_Radius2)
     _draw_chessman_pos(screen, p1_indicator_pos, PLAYER1_COLOR)
-    p1_text_surf = font.render('玩家 1 (你)', True, INFO_TEXT_COLOR)
+    p1_text_surf = font.render('玩家', True, INFO_TEXT_COLOR)
     p1_text_rect = p1_text_surf.get_rect(midleft=(p1_indicator_pos[0] + Stone_Radius2 + 10, p1_indicator_pos[1]))
     screen.blit(p1_text_surf, p1_text_rect)
     y_pos += Stone_Radius2 * 3 # Move y_pos down for next item
@@ -283,13 +285,10 @@ def _draw_right_info(screen, font, cur_runner, player1_wins, player2_wins):
     
     # Current Turn Indicator
     if cur_runner.Value == BLACK_CHESSMAN.Value:
-        turn_indicator_rect = p1_text_rect
-    else:
-        turn_indicator_rect = p2_text_rect
-    turn_text_surf = font.render('<- 落子中', True, ACCENT_COLOR)
-    # Position indicator to the right of the player text
-    turn_text_rect = turn_text_surf.get_rect(midleft=(turn_indicator_rect.right + 10, turn_indicator_rect.centery))
-    screen.blit(turn_text_surf, turn_text_rect)
+        turn_text_surf = font.render('<-', True, ACCENT_COLOR)
+        turn_text_rect = turn_text_surf.get_rect(midleft=(p1_text_rect.right + 10, p1_text_rect.centery))
+        screen.blit(turn_text_surf, turn_text_rect)
+
 
     y_pos += Stone_Radius2 * 4 # Add more space before scores
 
@@ -350,6 +349,7 @@ def _get_clickpoint(click_pos):
 
 
 class AI:
+    """Represents the AI opponent logic."""
     def __init__(self, line_points, chessman):
         self._line_points = line_points
         self._my = chessman # Should be WHITE_CHESSMAN (global)
@@ -358,6 +358,7 @@ class AI:
         self._checkerboard = [[0] * line_points for _ in range(line_points)]
 
     def get_opponent_drop(self, point):
+        """Registers the opponent's move on the AI's internal board."""
         if 0 <= point.Y < self._line_points and 0 <= point.X < self._line_points:
              self._checkerboard[point.Y][point.X] = self._opponent.Value
         else:
@@ -365,6 +366,7 @@ class AI:
 
 
     def AI_drop(self):
+        """Calculates and returns the AI's next move based on scoring potential points."""
         point = None
         score = -1 # Initialize score to allow 0-score moves if necessary
         empty_cells = []
@@ -546,22 +548,6 @@ class AI:
 
         # Return the higher score (either my offensive score or defensive score)
         return max(my_score, opp_score)
-
-
-    # This helper seems unused or less useful with the revised scoring logic
-    def _get_stone_color(self, point, x_offset, y_offset, next):
-        x = point.X + x_offset
-        y = point.Y + y_offset
-        if 0 <= x < self._line_points and 0 <= y < self._line_points:
-            if self._checkerboard[y][x] == self._my.Value:
-                return 1
-            elif self._checkerboard[y][x] == self._opponent.Value:
-                return 2
-            else: # Empty
-                 # Original logic recursively checked next empty, might be complex/slow
-                 return 0 
-        else: # Off board
-            return -1 # Indicate blocked/off board
 
 
 if __name__ == '__main__':
