@@ -1,6 +1,6 @@
 # Project Development Guide
 
-[中文说明](Readme.md)
+[简体中文](Readme.md)
 ## 1. Introduction
 
 This project is a collection of classic mini-games in Python, accessible via a graphical launcher interface. Currently, it includes Snake, 2048, Gobang (Five-in-a-Row), and Minesweeper.

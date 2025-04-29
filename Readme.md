@@ -1,6 +1,6 @@
 # 项目开发说明
 
-[English Version](Readme-en.md)
+[English](Readme-en.md)
 ## 1. 引言
 
 本项目是一个包含多个经典小游戏的 Python 应用合集，通过一个图形化的启动器界面进行访问。目前包含贪吃蛇、2048、五子棋和扫雷游戏。
