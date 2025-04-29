@@ -37,6 +37,13 @@ FONT_LARGE = pygame.font.SysFont(FONT_FAMILY, 48)
 class Snake:
     def __init__(self):
         self.reset()
+        # 随机选择一个初始方向
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+        self.direction = random.choice(directions)
+        self.new_direction = self.direction
+        # 确保初始蛇身不会立即碰撞
+        while len(self.body) != len(set(self.body)):
+            self.reset()
     
     def reset(self):
         start_x = GRID_WIDTH // 2
@@ -66,6 +73,8 @@ class Snake:
             self.grow = False
     
     def check_collision(self):
+        if len(self.body) <= 3:  # 默认初始长度时不检测碰撞
+            return False
         return len(self.body) != len(set(self.body))
 
 # --- Reintroduce Food Class ---
@@ -202,13 +211,31 @@ def game_loop():
     exit_button_y = restart_button_y + button_height + 20
 
     while True:
-        screen.fill(BACKGROUND_COLOR) # Use new background
-
-        # 游戏结束文字 - Use standard fonts and colors
+        screen.fill(BACKGROUND_COLOR)
+        
+        # 创建半透明覆盖层
+        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 128))  # 半透明黑色背景
+        
+        # 绘制游戏结束时的蛇和食物状态
+        food_x = food.position[0] * GRID_SIZE + GRID_SIZE // 2
+        food_y = food.position[1] * GRID_SIZE + GRID_SIZE // 2
+        pygame.draw.circle(overlay, FOOD_COLOR, (food_x, food_y), body_radius)
+        
+        for idx, (x, y) in enumerate(snake.body):
+            center_x = x * GRID_SIZE + GRID_SIZE // 2
+            center_y = y * GRID_SIZE + GRID_SIZE // 2
+            radius = head_radius if idx == 0 else body_radius
+            color = SNAKE_HEAD_COLOR if idx == 0 else SNAKE_BODY_COLOR
+            pygame.draw.circle(overlay, color, (center_x, center_y), radius)
+        
+        screen.blit(overlay, (0, 0))
+        
+        # 游戏结束文字
         draw_centered_text(screen, "游戏结束！", FONT_LARGE, GAMEOVER_TEXT_COLOR, -100)
         draw_centered_text(screen, f"最终得分：{score}", FONT_MEDIUM, TEXT_COLOR, -30)
 
-        # 选项菜单 - Use draw_button
+        # 选项菜单
         restart_rect = draw_button(
             screen, "重新开始 (R)", FONT_MEDIUM,
             WIDTH // 2 - button_width // 2, restart_button_y, button_width, button_height,

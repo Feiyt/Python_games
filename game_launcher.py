@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox
 from PIL import Image, ImageTk
 import os
 import platform
@@ -39,7 +40,7 @@ class GameLauncherApp:
     def __init__(self, root):
         self.root = root
         self.root.title("游戏选择器")
-        self.root.geometry("800x600")  # 增大初始窗口尺寸
+        self.root.geometry("1000x800")  # 增大窗口尺寸确保所有选项完整显示
         self.root.configure(bg="#f0f0f0")
         self.root.resizable(True, True)  # 允许窗口调整大小
 
@@ -87,6 +88,16 @@ class GameLauncherApp:
             lambda: self.show_gomoku_options()
         )
 
+        self.create_button_with_icon(
+            self.main_frame,
+            None,
+            "扫雷",
+            "#FF9800",
+            lambda: run_game("Minesweeper/Minesweeper.py")
+        )
+
+        
+
         # 退出按钮
         self.exit_button = tk.Button(
             self.main_frame,
@@ -94,11 +105,11 @@ class GameLauncherApp:
             font=self.button_font,
             bg="#f44336",
             fg="white",
-            padx=20,
+            padx=10,
             pady=1,
             command=self.root.destroy
         )
-        self.exit_button.pack(fill="x", pady=50)
+        self.exit_button.pack(fill="x", pady=30, padx=30)
 
         # 五子棋选项框架（初始隐藏）
         self.gomoku_frame = tk.Frame(root, bg="#f0f0f0")
@@ -131,11 +142,11 @@ class GameLauncherApp:
             self.label_font = ("Arial", 20, "bold")
 
     def load_icons(self):
-        # 图标路径（相对于当前脚本目录）
-        size = (48, 48)
-
         # 获取当前脚本所在目录的绝对路径
         base_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # 图标路径（相对于当前脚本目录）
+        size = (48, 48)
 
         # 构建图标文件的完整路径
         snake_icon_path = os.path.join(base_dir, "resource", "images", "snake.ico")

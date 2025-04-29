@@ -319,24 +319,38 @@ def main_menu():
     sys.exit()
 
 # --- Game Over Screen (Updated Style) ---
-def game_over_screen(score, high_score):
+def game_over_screen(score, high_score, grid):
     button_width = 200
     button_height = 50
-    # Define button center positions
-    restart_button_center_x = SCREEN_WIDTH // 2
-    restart_button_center_y = SCREEN_HEIGHT * 0.6 + button_height // 2
-    menu_button_center_y = restart_button_center_y + button_height + 20
+    restart_button_y = SCREEN_HEIGHT * 0.6 + button_height // 2
+    menu_button_y = restart_button_y + button_height + 20
 
-    running = True
-    while running:
+    while True:
         screen.fill(BACKGROUND_COLOR)
-
-        # Game Over Text
+        
+        # 创建半透明覆盖层
+        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 128))
+        
+        # 绘制游戏结束时的棋盘状态
+        for r in range(GRID_ROWS):
+            for c in range(GRID_COLUMNS):
+                rect = pygame.Rect(c * BLOCK_SIZE, INFO_PANEL_HEIGHT + r * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE)
+                tile_color = get_tile_color(grid[r][c])
+                pygame.draw.rect(overlay, tile_color, rect)
+                if grid[r][c] != 0:
+                    text_surface = FONT_TILE.render(str(grid[r][c]), True, TILE_TEXT_COLOR)
+                    text_rect = text_surface.get_rect(center=rect.center)
+                    overlay.blit(text_surface, text_rect)
+        
+        screen.blit(overlay, (0, 0))
+        
+        # 游戏结束文字
         go_text = FONT_LARGE.render("游戏结束!", True, PRIMARY_COLOR)
         go_rect = go_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.2))
         screen.blit(go_text, go_rect)
-
-        # Score Text
+        
+        # 分数显示
         score_text = FONT_MEDIUM.render(f"得分: {score}", True, TEXT_COLOR)
         score_rect = score_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.35))
         screen.blit(score_text, score_rect)
@@ -345,36 +359,44 @@ def game_over_screen(score, high_score):
         hs_rect = hs_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT * 0.45))
         screen.blit(hs_text, hs_rect)
 
-        # Buttons - Pass center coordinates
-        restart_button_rect, _ = draw_button(
+        # 按钮
+        restart_rect, _ = draw_button(
             screen, "重新开始 (R)", FONT_MEDIUM,
-            restart_button_center_x, restart_button_center_y, # Pass center X, Y
-            button_width, button_height,
+            SCREEN_WIDTH // 2, restart_button_y, button_width, button_height,
             PRIMARY_COLOR, ACCENT_COLOR, BUTTON_TEXT_COLOR
         )
-        menu_button_rect, _ = draw_button(
-            screen, "返回菜单 (M)", FONT_MEDIUM,
-            restart_button_center_x, menu_button_center_y, # Pass center X, Y
-            button_width, button_height,
+        menu_rect, _ = draw_button(
+            screen, "退出游戏 (Q)", FONT_MEDIUM,
+            SCREEN_WIDTH // 2, menu_button_y, button_width, button_height,
             PRIMARY_COLOR, ACCENT_COLOR, BUTTON_TEXT_COLOR
         )
 
-        # Event Handling
+        # 事件处理
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
+                    grid = [[0] * GRID_COLUMNS for _ in range(GRID_ROWS)]
+                    add_new_tile(grid)
+                    add_new_tile(grid)
                     return "restart"
-                elif event.key == pygame.K_m:
-                    return "menu"
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    if restart_button_rect.collidepoint(event.pos):
-                        return "restart"
-                    elif menu_button_rect.collidepoint(event.pos):
-                        return "menu"
+                elif event.key == pygame.K_q or event.key == pygame.K_ESCAPE:
+                    # 直接退出游戏
+                    pygame.quit()
+                    sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if restart_rect.collidepoint(event.pos):
+                    # 直接重置游戏状态并开始新游戏
+                    grid = [[0] * GRID_COLUMNS for _ in range(GRID_ROWS)]
+                    add_new_tile(grid)
+                    add_new_tile(grid)
+                    return "restart"
+                elif menu_rect.collidepoint(event.pos):
+                    # 直接退出游戏
+                    pygame.quit()
+                    sys.exit()
 
         pygame.display.flip()
         clock.tick(30)
@@ -453,14 +475,15 @@ def main():
 
             # --- Game Over Handling ---
             if game_over:
-                action = game_over_screen(current_score, high_score)
+                action = game_over_screen(current_score, high_score, grid)
                 if action == "restart":
-                    running_game = False # Break inner loop to restart
-                elif action == "menu":
-                    running_game = False # Break inner loop
-                    # Need a way to signal outer loop to not call main_menu again? 
-                    # Or just let it call main_menu again. Simpler.
-                    break # Exit inner loop, outer loop will call main_menu()
+                    # 直接重置游戏状态并开始新游戏
+                    grid = [[0] * GRID_COLUMNS for _ in range(GRID_ROWS)]
+                    add_new_tile(grid)
+                    add_new_tile(grid)
+                    current_score = 0
+                    game_over = False
+                    continue # 继续游戏循环
 
             pygame.display.flip()
             clock.tick(60)
