@@ -90,7 +90,7 @@ class GameLauncherApp:
 
         self.create_button_with_icon(
             self.main_frame,
-            None,
+            self.minesweeper_icon,
             "扫雷",
             "#FF9800",
             lambda: run_game("Minesweeper/Minesweeper.py")
@@ -109,7 +109,7 @@ class GameLauncherApp:
             pady=1,
             command=self.root.destroy
         )
-        self.exit_button.pack(fill="x", pady=90, padx=0)
+        self.exit_button.pack(fill="x", pady=100, padx=0)
 
         # 五子棋选项框架（初始隐藏）
         self.gomoku_frame = tk.Frame(root, bg="#f0f0f0")
@@ -152,6 +152,7 @@ class GameLauncherApp:
         snake_icon_path = os.path.join(base_dir, "resource", "images", "snake.ico")
         gobang_icon_path = os.path.join(base_dir, "resource", "images", "gobang.ico")
         twenty_icon_path = os.path.join(base_dir, "resource", "images", "2048.ico")
+        minesweeper_icon_path = os.path.join(base_dir, "resource", "images", "minesweeper.ico")
 
         # 检查图标文件是否存在
         if not os.path.exists(snake_icon_path):
@@ -179,6 +180,14 @@ class GameLauncherApp:
             self.twenty_icon = Image.open(twenty_icon_path)
             self.twenty_icon.thumbnail(size, Image.Resampling.LANCZOS)
             self.twenty_icon = ImageTk.PhotoImage(self.twenty_icon)
+
+        if not os.path.exists(minesweeper_icon_path):
+            tk.messagebox.showerror("图标路径错误", f"找不到图标文件: {minesweeper_icon_path}")
+            self.minesweeper_icon = None
+        else:
+            self.minesweeper_icon = Image.open(minesweeper_icon_path)
+            self.minesweeper_icon.thumbnail(size, Image.Resampling.LANCZOS)
+            self.minesweeper_icon = ImageTk.PhotoImage(self.minesweeper_icon)
 
     def create_button_with_icon(self, parent, icon, text, color, command):
         # 创建一个水平布局的框架

@@ -26,7 +26,7 @@
 │   └── images/
 │       ├── 2048.ico       # 2048 图标
 │       ├── gobang.ico     # 五子棋图标
-│       ├── minesweeper.ico # 扫雷图标 (需要添加)
+│       ├── minesweeper.ico # 扫雷图标
 │       └── snake.ico      # 贪吃蛇图标
 ├── .idea/                   # IDE 配置文件 (例如 PyCharm, VSCode)
 ├── game_launcher.py       # 主入口 - 基于 Tkinter 的游戏选择器 UI

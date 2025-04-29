@@ -26,7 +26,7 @@ This project is a collection of classic mini-games in Python, accessible via a g
 │   └── images/
 │       ├── 2048.ico       # 2048 icon
 │       ├── gobang.ico     # Gobang icon
-│       ├── minesweeper.ico # Minesweeper icon (needs to be added)
+│       ├── minesweeper.ico # Minesweeper icon
 │       └── snake.ico      # Snake icon
 ├── .idea/                   # IDE config files (e.g., PyCharm, VSCode)
 ├── game_launcher.py       # Main entry - Tkinter-based game selector UI
