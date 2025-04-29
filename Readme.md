@@ -1,9 +1,9 @@
 # 项目开发说明
 
-[英文说明](Readme-en.md)
+[English Version](Readme-en.md)
 ## 1. 引言
 
-本项目是一个包含多个经典小游戏的 Python 应用合集，通过一个图形化的启动器界面进行访问。目前包含贪吃蛇、2048 和五子棋游戏。
+本项目是一个包含多个经典小游戏的 Python 应用合集，通过一个图形化的启动器界面进行访问。目前包含贪吃蛇、2048、五子棋和扫雷游戏。
 
 ## 2. 项目结构
 
@@ -16,6 +16,8 @@
 │   ├── ManAndMachine.py   # 五子棋人机对战逻辑与 UI
 │   ├── ManAndMan.py       # 五子棋人人对战逻辑与 UI
 │   └── checkerboard.py    # 五子棋共享棋盘逻辑与棋子定义
+├── Minesweeper/
+│   └── Minesweeper.py     # 扫雷游戏逻辑与 UI
 ├── Snake/
 │   └── Snake-eating.py    # 贪吃蛇游戏逻辑与 UI
 ├── resource/
@@ -24,40 +26,45 @@
 │   └── images/
 │       ├── 2048.ico       # 2048 图标
 │       ├── gobang.ico     # 五子棋图标
+│       ├── minesweeper.ico # 扫雷图标 (需要添加)
 │       └── snake.ico      # 贪吃蛇图标
 ├── .idea/                   # IDE 配置文件 (例如 PyCharm, VSCode)
 ├── game_launcher.py       # 主入口 - 基于 Tkinter 的游戏选择器 UI
-├── Readme.md         # 本文件 - 项目文档
-└── requirements.txt       # (可选 - 如有需要，列出依赖项)
+├── Readme.md         # 本文件 - 项目文档 (中文)
+├── Readme-en.md      # 项目文档 (英文)
+├── .gitignore             # Git 忽略文件
+└── requirements.txt       # 项目依赖库
 ```
 
 ## 3. 核心技术
 
 *   **Python 3:** 主要编程语言。
-*   **Pygame:** 用于开发各个游戏（贪吃蛇、2048、五子棋）的核心玩法、图形渲染、事件处理。
+*   **Pygame:** 用于开发各个游戏（贪吃蛇、2048、五子棋、扫雷）的核心玩法、图形渲染、事件处理。
 *   **Tkinter:** 用于创建 `game_launcher.py` 的图形用户界面 (GUI)，允许用户选择并启动不同的游戏。
 *   **PIL (Pillow):** Tkinter 启动器 (`game_launcher.py`) 使用该库加载并显示按钮上的游戏图标 (`.ico` 文件)。
 *   **标准库:** `os`, `sys`, `random`, `subprocess`, `ctypes`, `math` 用于各种任务，如文件路径操作、系统交互、随机数生成、启动游戏进程、DPI 感知 (Windows) 和计算。
 
 ## 4. 统一 UI 风格 (Pygame 游戏)
 
-为了提供统一的外观和体验，所有基于 Pygame 的游戏（贪吃蛇、2048、五子棋）都应用了一致的视觉风格。
+为了提供统一的外观和体验，所有基于 Pygame 的游戏（贪吃蛇、2048、五子棋、扫雷）都应用了一致的视觉风格。
 
 *   **目标:** 提供统一的用户体验。
 *   **实现:** 在每个游戏的 Python 文件中定义常量和绘图函数。
 *   **调色板:**
     *   `BACKGROUND_COLOR`: `(200, 200, 200)` (浅灰色) - 主背景。
     *   `PRIMARY_COLOR`: `(50, 50, 150)` (中蓝色) - 主要 UI 元素、按钮、部分文本。
-    *   `SECONDARY_COLOR`: `(100, 100, 200)` (亮蓝色) - 次要元素（原始设计中用于蛇身，现用于某些方块背景）。
+    *   `SECONDARY_COLOR`: `(100, 100, 200)` (亮蓝色) - 次要元素。
     *   `ACCENT_COLOR`: `(255, 215, 0)` (金色) - 高亮、按钮悬停效果、食物/分数元素。
     *   `TEXT_COLOR`: `(0, 0, 0)` (黑色) - 默认文本颜色。
     *   `BUTTON_TEXT_COLOR`: `(255, 255, 255)` (白色) - 按钮上的文本。
-    *   `GRID_LINE_COLOR`: `(100, 100, 100)` (深灰色) - 五子棋和 2048 中的网格线。
+    *   `GRID_LINE_COLOR`: `(100, 100, 100)` (深灰色) - 五子棋、2048、扫雷中的网格线/边框。
     *   *五子棋棋子颜色:* 明确指定为黑色 `(0,0,0)` 和白色 `(255,255,255)`。
+    *   *扫雷数字颜色:* 1-8 分别使用不同的颜色（蓝、绿、红、深蓝、棕、青、黑、灰）。
+    *   *扫雷旗帜/地雷颜色:* 红色 `(255,0,0)`。
 *   **字体:**
     *   `FONT_FAMILY`: `"SimHei"` - 在所有游戏中统一使用。
-    *   `FONT_SMALL`: 字号 24
-    *   `FONT_MEDIUM`: 字号 36
+    *   `FONT_SMALL`: 字号 20 或 24
+    *   `FONT_MEDIUM`: 字号 30 或 36
     *   `FONT_LARGE`: 字号 48
     *   特定字体（例如 2048 中的 `FONT_TILE`）可能使用不同字号，但保持同一字体家族。
 *   **按钮 (`draw_button` 函数):**
@@ -87,15 +94,20 @@
     *   模式：
         *   `ManAndMachine.py`：玩家 vs AI。包含基本的 AI 评分和走棋选择逻辑。显示玩家/AI 信息和胜负统计。
         *   `ManAndMan.py`：玩家 vs 玩家（本地轮流）。显示玩家信息。
+*   **扫雷 (`Minesweeper/Minesweeper.py`):**
+    *   经典的逻辑解谜游戏。
+    *   目标：找出所有没有地雷的方块，避免点开地雷。
+    *   玩法：鼠标左键点击揭开方块。方块上的数字表示周围八个格子中地雷的数量。鼠标右键点击可以标记或取消标记疑似有地雷的方块。
+    *   特色：首次点击保证安全。包含游戏结束和胜利判断。提供重新开始和退出选项。
 
 ## 6. 如何运行
 
 1.  确保已安装 **Python 3**。
-2.  安装必要的库（Tkinter 通常自带，Pillow 需要安装以支持启动器图标）：
+2.  根据 `requirements.txt` 安装必要的库：
     ```bash
-    pip install Pillow
-    # Pygame 通常随 Python 安装或易于安装:
-    # pip install pygame
+    pip install -r requirements.txt
+    # 或者手动安装:
+    # pip install Pillow pygame
     ```
 3.  在终端中，切换到项目的根目录。
 4.  运行游戏启动器：
@@ -109,5 +121,5 @@
 ## 7. 资源 (`resource/`)
 
 *   **`fonts/`:** 包含应用程序使用的字体文件（当前为供 Tkinter 启动器使用的 `simsun.ttc`）。
-*   **`images/`:** 包含 Tkinter 启动器中按钮使用的图标文件 (`.ico`)。
+*   **`images/`:** 包含 Tkinter 启动器中按钮使用的图标文件 (`.ico`)。确保为每个游戏提供对应的图标 (例如 `minesweeper.ico`)。
 
