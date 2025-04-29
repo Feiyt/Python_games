@@ -109,7 +109,7 @@ class GameLauncherApp:
             pady=1,
             command=self.root.destroy
         )
-        self.exit_button.pack(fill="x", pady=30, padx=30)
+        self.exit_button.pack(fill="x", pady=90, padx=0)
 
         # 五子棋选项框架（初始隐藏）
         self.gomoku_frame = tk.Frame(root, bg="#f0f0f0")
