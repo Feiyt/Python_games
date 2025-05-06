@@ -1,11 +1,11 @@
 # Project Development Guide
 
 [简体中文](Readme.md)
-## 1. Introduction
+
 
 This project is a collection of classic mini-games in Python, accessible via a graphical launcher interface. Currently, it includes Snake, 2048, Gobang (Five-in-a-Row), and Minesweeper.
 
-## 2. Project Structure
+## 1. Project Structure
 
 ```
 .
@@ -36,7 +36,7 @@ This project is a collection of classic mini-games in Python, accessible via a g
 └── requirements.txt       # Project dependencies
 ```
 
-## 3. Core Technologies
+## 2. Core Technologies
 
 *   **Python 3:** Main programming language.
 *   **Pygame:** Used for core gameplay, graphics rendering, and event handling in all games (Snake, 2048, Gobang, Minesweeper).
@@ -44,7 +44,7 @@ This project is a collection of classic mini-games in Python, accessible via a g
 *   **PIL (Pillow):** Used by the Tkinter launcher (`game_launcher.py`) to load and display game icons (`.ico` files).
 *   **Standard Library:** `os`, `sys`, `random`, `subprocess`, `ctypes`, `math` for tasks like file path operations, system interaction, random number generation, launching game processes, DPI awareness (Windows), and calculations.
 
-## 4. Unified UI Style (Pygame Games)
+## 3. Unified UI Style (Pygame Games)
 
 To provide a consistent look and feel, all Pygame-based games (Snake, 2048, Gobang, Minesweeper) use a unified visual style.
 
@@ -74,7 +74,7 @@ To provide a consistent look and feel, all Pygame-based games (Snake, 2048, Goba
     *   Text uses `BUTTON_TEXT_COLOR` and standard font.
     *   Padding around text for better visuals.
 
-## 5. Game Modules
+## 4. Game Modules
 
 *   **Snake (`Snake/Snake-eating.py`):**
     *   Classic snake game where the player controls a growing snake.
@@ -100,7 +100,7 @@ To provide a consistent look and feel, all Pygame-based games (Snake, 2048, Goba
     *   Play: Left-click reveals a square. Numbers on squares indicate the count of adjacent mines. Right-click flags/unflags a square suspected of containing a mine.
     *   Features: First click is guaranteed safe. Includes game over and win condition checks. Offers "Restart" and "Exit" options upon game completion.
 
-## 6. How to Run
+## 5. How to Run
 
 1.  Make sure **Python 3** is installed.
 2.  Install necessary libraries listed in `requirements.txt`:
@@ -118,7 +118,7 @@ To provide a consistent look and feel, all Pygame-based games (Snake, 2048, Goba
 5.  The launcher window will appear. Click the button for the game you want to play.
 6.  The selected game will start in a new window. The launcher uses `subprocess.Popen` to run the game scripts independently.
 
-## 7. Resources (`resource/`)
+## 6. Resources (`resource/`)
 
 *   **`fonts/`:** Contains font files used by the application (currently `simsun.ttc` for the Tkinter launcher).
 *   **`images/`:** Contains icon files (`.ico`) used by the buttons in the Tkinter launcher. Ensure a corresponding icon is provided for each game (e.g., `minesweeper.ico`).
