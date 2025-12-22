@@ -1,6 +1,5 @@
 # Python Games Collection
 
-[English](Readme-en.md)
 
 一个包含多个经典小游戏的 Python 应用合集，通过图形化启动器一键畅玩。
 
