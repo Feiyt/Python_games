@@ -1,2 +1,5 @@
 high_score.txt 
 .idea/
+.venv/
+__pycache__/
+
